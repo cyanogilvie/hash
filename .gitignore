@@ -1,0 +1,10 @@
+Makefile
+config.log
+config.status
+autom4te.cache
+configure
+*.so
+*.o
+core
+pkgIndex.tcl
+*.swp
