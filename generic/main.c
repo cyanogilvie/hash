@@ -9,7 +9,7 @@ static int glue_md5(cdata, interp, objc, objv) //<<<
 {
 	md5_byte_t*		bytes;
 	int				len;
-	md5_bute_t		digest[16];
+	md5_byte_t		digest[16];
 	md5_state_t		state;
 
 	CHECK_ARGS(1, "data");
