@@ -1,0 +1,16 @@
+# vim: ft=tcl foldmethod=marker foldmarker=<<<,>>> ts=4 shiftwidth=4
+
+if {"::tcltest" ni [namespace children]} {
+	package require tcltest 2.2.5
+	namespace import ::tcltest::*
+}
+
+package require hash
+
+test md5-1.1 {Basic MD5 test} -body { #<<<
+	binary encode hex [hash::md5 "hello, world"]
+} -result {}
+#>>>
+
+::tcltest::cleanupTests
+return
