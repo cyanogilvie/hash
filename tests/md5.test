@@ -10,6 +10,7 @@ package require hash
 test md5-1.1 {Basic MD5 test} -body { #<<<
 	binary encode hex [hash::md5 "hello, world"]
 } -result {e4d7f1b4ed2e42d15898f4b27b019da4}
+#>>>
 test md5-2.1 {Incremental MD5 test} -body { #<<<
 	set handle	[hash::md5_init]
 	hash::md5_append $handle "hello"
