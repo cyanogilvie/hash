@@ -236,6 +236,8 @@ install-doc: doc
 
 test: binaries libraries
 	$(TCLSH) `@CYGPATH@ $(srcdir)/tests/all.tcl` $(TESTFLAGS)
+benchmark: binaries libraries
+	$(TCLSH) `@CYGPATH@ $(srcdir)/bench/run.tcl` $(TESTFLAGS)
 
 shell: binaries libraries
 	@$(TCLSH) $(SCRIPT)

@@ -1,0 +1,37 @@
+if {"bench" ni [info commands bench]} {
+	package require bench
+	namespace import bench::*
+}
+
+package require hash
+package require tcllib_sha256
+
+proc readbin fn { #<<<
+	set h	[open $fn rb]
+	try {
+		read $h
+	} finally {
+		close $h
+	}
+}
+
+#>>>
+
+bench sha2-1.1 {Hash a 2.4MB image} -batch 2 -setup { #<<<
+	set bytes	[readbin bench/rawtest.webp]
+} -compare {
+	hash_sha256 {
+		hash::sha256 $bytes
+	}
+} -cleanup {
+	unset -nocomplain bytes
+} -result 101431b9be6b6670c71f1095ce19e23f8405ab184c50112a8f855c6f9e67c4de
+if 0 {
+
+	tcllib_sha256 {
+		sha2::sha256 $bytes
+	}
+}
+#>>>
+
+# vim: ft=tcl foldmethod=marker foldmarker=<<<,>>> ts=4 shiftwidth=4
