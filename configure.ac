@@ -17,7 +17,7 @@ dnl	to configure the system for the local environment.
 # so you can encode the package version directly into the source files.
 #-----------------------------------------------------------------------
 
-AC_INIT([hash],[0.3])
+AC_INIT([hash],[0.3.1])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -69,7 +69,7 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([main.c md5.c sha2.c])
+TEABASE_ADD_SOURCES([main.c md5.c sha2.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
@@ -146,6 +146,8 @@ TEA_CONFIG_CFLAGS
 
 TEA_ENABLE_SYMBOLS
 
+TEABASE_INIT()
+
 #--------------------------------------------------------------------
 # This macro generates a line to use when building a library.  It
 # depends on values set by the TEA_ENABLE_SHARED, TEA_ENABLE_SYMBOLS,
@@ -178,7 +180,7 @@ TEA_PROG_TCLSH
 # substituting the AC variables in. Include these here.
 #--------------------------------------------------------------------
 
-AC_CONFIG_FILES([Makefile pkgIndex.tcl])
+AC_CONFIG_FILES([Makefile pkgIndex.tcl Makefile.teabase])
 #AC_CONFIG_FILES([hashConfig.sh])
 
 #--------------------------------------------------------------------

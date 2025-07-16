@@ -8,3 +8,11 @@ configure
 core
 pkgIndex.tcl
 *.swp
+*.gcda
+*.gcno
+last
+tags
+Makefile.teabase
+configure~
+doc/hash.n
+doc/.build

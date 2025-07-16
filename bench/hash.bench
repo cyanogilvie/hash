@@ -1,0 +1,163 @@
+if {"bench" ni [info commands bench]} {
+	package require bench
+	namespace import bench::*
+}
+
+package require hash
+
+proc main {} {
+	# MD5 benchmarks
+	bench md5-1.1 {MD5 small data (32 bytes)} -batch auto -setup { #<<<
+		set data	[string repeat a 32]
+	} -deps {
+		tcllib		{package require md5}
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::md5 $data}
+		tomcrypt	{::tomcrypt::hash md5 $data}
+		tcllib		{::md5::md5 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -result [binary decode hex 5eca9bd3eb07c006cd43ae48dfde7fd3]
+	#>>>
+	bench md5-1.2 {MD5 medium data (4KB)} -batch auto -setup { #<<<
+		set data	[string repeat a 4096]
+	} -deps {
+		tcllib		{package require md5}
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::md5 $data}
+		tomcrypt	{::tomcrypt::hash md5 $data}
+		tcllib		{::md5::md5 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -result [binary decode hex 21a199c53f422a380e20b162fb6ebe9c]
+	#>>>
+	bench md5-1.3 {MD5 large data (64KB)} -batch auto -setup { #<<<
+		set data	[string repeat a 65536]
+	} -deps {
+		tcllib		{package require md5}
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::md5 $data}
+		tomcrypt	{::tomcrypt::hash md5 $data}
+		tcllib		{::md5::md5 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -result [binary decode hex 2d61aa54b58c2e94403fb092c3dbc027]
+	#>>>
+
+	# SHA-256 benchmarks
+	bench sha256-2.1 {SHA-256 small data (32 bytes)} -batch auto -setup { #<<<
+		set data	[string repeat a 32]
+	} -deps {
+		tcllib		{package require sha256}
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha256 $data}
+		tomcrypt	{::tomcrypt::hash sha256 $data}
+		tcllib		{::sha2::sha256 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		tomcrypt	[binary decode hex 3ba3f5f43b92602683c19aee62a20342b084dd5971ddd33808d81a328879a547] \
+		*			3ba3f5f43b92602683c19aee62a20342b084dd5971ddd33808d81a328879a547 \
+	]
+	#>>>
+	bench sha256-2.2 {SHA-256 medium data (4KB)} -batch auto -setup { #<<<
+		set data	[string repeat a 4096]
+	} -deps {
+		tcllib		{package require sha256}
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha256 $data}
+		tomcrypt	{::tomcrypt::hash sha256 $data}
+		tcllib		{::sha2::sha256 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		tomcrypt	[binary decode hex c93eee2d0db02f10acc7460d9576e122dcf8cd53c4bf8dfcae1b3e74ebcfff5a] \
+		*			c93eee2d0db02f10acc7460d9576e122dcf8cd53c4bf8dfcae1b3e74ebcfff5a \
+	]
+	#>>>
+	bench sha256-2.3 {SHA-256 large data (64KB)} -batch auto -setup { #<<<
+		set data	[string repeat a 65536]
+	} -deps {
+		tcllib		{package require sha256}
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha256 $data}
+		tomcrypt	{::tomcrypt::hash sha256 $data}
+		tcllib		{::sha2::sha256 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		tomcrypt	[binary decode hex bf718b6f653bebc184e1479f1935b8da974d701b893afcf49e701f3e2f9f9c5a] \
+		*			bf718b6f653bebc184e1479f1935b8da974d701b893afcf49e701f3e2f9f9c5a \
+	]
+	#>>>
+
+	# SHA-384 benchmarks
+	bench sha384-3.1 {SHA-384 small data (32 bytes)} -batch auto -setup { #<<<
+		set data	[string repeat a 32]
+	} -deps {
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha384 $data}
+		tomcrypt	{::tomcrypt::hash sha384 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		hash		da1a8a9e3db0707d42def9074ccd9c7ad6866778201c3e584ee110e3252ac5766084a8bc637a2ba9913c9e16e2f1166b \
+		tomcrypt	[binary decode hex da1a8a9e3db0707d42def9074ccd9c7ad6866778201c3e584ee110e3252ac5766084a8bc637a2ba9913c9e16e2f1166b] \
+	]
+	#>>>
+	bench sha384-3.2 {SHA-384 medium data (4KB)} -batch auto -setup { #<<<
+		set data	[string repeat a 4096]
+	} -deps {
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha384 $data}
+		tomcrypt	{::tomcrypt::hash sha384 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		hash		abc1d4d2d01083c290896b326969cbf848d806bc21dfe77e2af4e45d158770e94ab8f0d35575ef6f3d1a28ef13cef09e \
+		tomcrypt	[binary decode hex abc1d4d2d01083c290896b326969cbf848d806bc21dfe77e2af4e45d158770e94ab8f0d35575ef6f3d1a28ef13cef09e] \
+	]
+	#>>>
+
+	# SHA-512 benchmarks
+	bench sha512-1.1 {SHA-512 small data (32 bytes)} -batch auto -setup { #<<<
+		set data	[string repeat a 32]
+	} -deps {
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha512 $data}
+		tomcrypt	{::tomcrypt::hash sha512 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		hash		020089a47cb0761c222c323aec2bdecdaa7a0d0ec094cda8c5755ba26844453c25b37e4bc98aab8adc55c9da75bcd83af62905d62e9044a5d64cd93d93b54b34 \
+		tomcrypt	[binary decode hex 020089a47cb0761c222c323aec2bdecdaa7a0d0ec094cda8c5755ba26844453c25b37e4bc98aab8adc55c9da75bcd83af62905d62e9044a5d64cd93d93b54b34] \
+	]
+	#>>>
+	bench sha512-2.2 {SHA-512 medium data (4KB)} -batch auto -setup { #<<<
+		set data	[string repeat a 4096]
+	} -deps {
+		tomcrypt	{package require tomcrypt}
+	} -compare {
+		hash		{::hash::sha512 $data}
+		tomcrypt	{::tomcrypt::hash sha512 $data}
+	} -cleanup {
+		unset -nocomplain data
+	} -results [list \
+		hash		eb7040948a189a59d72d1e53869fba1aeacb6c3be33c7be5d1f03f31a9660033b2018649b33325b48b317944664d8e71a64a7c6f29dd18acf162c8b0d13a214e \
+		tomcrypt	[binary decode hex eb7040948a189a59d72d1e53869fba1aeacb6c3be33c7be5d1f03f31a9660033b2018649b33325b48b317944664d8e71a64a7c6f29dd18acf162c8b0d13a214e] \
+	]
+	#>>>
+}
+
+main
+
+# vim: ft=tcl foldmethod=marker foldmarker=<<<,>>> ts=4 shiftwidth=4
