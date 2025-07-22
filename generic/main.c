@@ -1,12 +1,8 @@
-#include "tclstuff.h"
+#include "hashInt.h"
 #include "md5.h"
 #include "sha2.h"
 
-static int glue_md5(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_md5) //<<<
 {
 	md5_byte_t*		bytes;
 	int				len;
@@ -27,11 +23,7 @@ static int glue_md5(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_md5_init(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_md5_init) //<<<
 {
 	Tcl_Obj*		res;
 	int				dontcare;
@@ -50,11 +42,7 @@ static int glue_md5_init(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_md5_append(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_md5_append) //<<<
 {
 	int				len, dontcare;
 	md5_state_t*	state;
@@ -71,11 +59,7 @@ static int glue_md5_append(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_md5_finish(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_md5_finish) //<<<
 {
 	int				dontcare;
 	md5_state_t*	state;
@@ -93,11 +77,7 @@ static int glue_md5_finish(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_sha2(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_sha2) //<<<
 {
 	int				variant;
 	unsigned char*	data;
@@ -160,11 +140,7 @@ static int glue_sha2(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_sha256(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_sha256) //<<<
 {
 	unsigned char*	data;
 	int				datalen;
@@ -185,11 +161,7 @@ static int glue_sha256(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_sha384(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_sha384) //<<<
 {
 	unsigned char*	data;
 	int				datalen;
@@ -210,11 +182,7 @@ static int glue_sha384(cdata, interp, objc, objv) //<<<
 }
 
 //>>>
-static int glue_sha512(cdata, interp, objc, objv) //<<<
-	ClientData		cdata;
-	Tcl_Interp*		interp;
-	int				objc;
-	Tcl_Obj *const	objv[];
+static OBJCMD(glue_sha512) //<<<
 {
 	unsigned char*	data;
 	int				datalen;
@@ -237,24 +205,33 @@ static int glue_sha512(cdata, interp, objc, objv) //<<<
 //>>>
 int Hash_Init(Tcl_Interp* interp) //<<<
 {
-	if (Tcl_InitStubs(interp, "8.4", 0) == NULL)
-		return TCL_ERROR;
+	int		code = TCL_OK;
+
+#if USE_TCL_STUBS
+	if (Tcl_InitStubs(interp, TCL_VERSION, 0) == NULL) return TCL_ERROR;
+#endif
+
+	Tcl_Namespace*	ns = Tcl_CreateNamespace(interp, NS, NULL, NULL);
+	TEST_OK_LABEL(finally, code, Tcl_Export(interp, ns, "*", 0));
 
 	// MD5
-	NEW_CMD(PACKAGE_NAME "::md5", glue_md5);
-	NEW_CMD(PACKAGE_NAME "::md5_init", glue_md5_init);
-	NEW_CMD(PACKAGE_NAME "::md5_append", glue_md5_append);
-	NEW_CMD(PACKAGE_NAME "::md5_finish", glue_md5_finish);
+	Tcl_CreateObjCommand(interp, NS "::md5", glue_md5, NULL, NULL);
+	Tcl_CreateObjCommand(interp, NS "::md5_init", glue_md5_init, NULL, NULL);
+	Tcl_CreateObjCommand(interp, NS "::md5_append", glue_md5_append, NULL, NULL);
+	Tcl_CreateObjCommand(interp, NS "::md5_finish", glue_md5_finish, NULL, NULL);
 
 	// SHA-2
-	NEW_CMD(PACKAGE_NAME "::sha2", glue_sha2);
-	NEW_CMD(PACKAGE_NAME "::sha256", glue_sha256);
-	NEW_CMD(PACKAGE_NAME "::sha384", glue_sha384);
-	NEW_CMD(PACKAGE_NAME "::sha512", glue_sha512);
+	Tcl_CreateObjCommand(interp, NS "::sha2", glue_sha2, NULL, NULL);
+	Tcl_CreateObjCommand(interp, NS "::sha256", glue_sha256, NULL, NULL);
+	Tcl_CreateObjCommand(interp, NS "::sha384", glue_sha384, NULL, NULL);
+	Tcl_CreateObjCommand(interp, NS "::sha512", glue_sha512, NULL, NULL);
 
-	TEST_OK(Tcl_PkgProvide(interp, PACKAGE_NAME, PACKAGE_VERSION));
+	TEST_OK_LABEL(finally, code, areion_init(interp));
 
-	return TCL_OK;
+	TEST_OK_LABEL(finally, code, Tcl_PkgProvide(interp, PACKAGE_NAME, PACKAGE_VERSION));
+
+finally:
+	return code;
 }
 
 //>>>

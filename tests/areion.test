@@ -1,0 +1,174 @@
+source [file join [file dirname [info script]] common.tcl]
+
+test areion_perm256-0.1 {Too few args}		-body {::hash::areion_perm256						} -returnCodes error -result {wrong # args: should be "::hash::areion_perm256 block"} -errorCode {TCL WRONGARGS}
+test areion_perm256-0.2 {Too many args}		-body {::hash::areion_perm256 foo bar				} -returnCodes error -result {wrong # args: should be "::hash::areion_perm256 block"} -errorCode {TCL WRONGARGS}
+test areion_perm256-0.3 {Block too short}	-body {::hash::areion_perm256 [string repeat a 31]	} -returnCodes error -result {block must be 32 bytes long} -errorCode NONE
+test areion_perm256-0.4 {Block too long}	-body {::hash::areion_perm256 [string repeat a 33]	} -returnCodes error -result {block must be 32 bytes long} -errorCode NONE
+test areion_perm256-0.5 {Not a bytearray}	-body {::hash::areion_perm256 \u306f				} -returnCodes error -result "expected byte sequence but character 0 was '\u306F' (U+00306F)" -errorCode {TCL VALUE BYTES}
+
+test areion_perm256-1.1 {Basic areion permutation 256 test} -body { #<<<
+	binary encode hex [::hash::areion_perm256 [binary decode hex {
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+	}]]
+} -result [regsub -all {\s+} {
+	28 12 a7 24 65 b2 6e 9f ca 75 83 f6 e4 12 3a a1
+	49 0e 35 e7 d5 20 3e 4b a2 e9 27 b0 48 2f 4d b8
+} {}]
+#>>>
+test areion_perm256-2.1 {Basic areion permutation 256 test} -body { #<<<
+	binary encode hex [::hash::::areion_perm256 [binary decode hex {
+		00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+		10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+	}]]
+} -result [regsub -all {\s+} {
+	68 84 5f 13 2e e4 61 60 66 c7 02 d9 42 a3 b2 c3
+	a3 77 f6 5b 13 bb 05 c7 cd 1f b2 9c 89 af a1 85
+} {}]
+#>>>
+
+test areion_perm512-0.1 {Too few args}		-body {::hash::areion_perm512						} -returnCodes error -result {wrong # args: should be "::hash::areion_perm512 block"} -errorCode {TCL WRONGARGS}
+test areion_perm512-0.2 {Too many args}		-body {::hash::areion_perm512 foo bar				} -returnCodes error -result {wrong # args: should be "::hash::areion_perm512 block"} -errorCode {TCL WRONGARGS}
+test areion_perm512-0.3 {Block too short}	-body {::hash::areion_perm512 [string repeat a 63]	} -returnCodes error -result {block must be 64 bytes long} -errorCode NONE
+test areion_perm512-0.4 {Block too long}	-body {::hash::areion_perm512 [string repeat a 65]	} -returnCodes error -result {block must be 64 bytes long} -errorCode NONE
+test areion_perm512-0.5 {Not a bytearray}	-body {::hash::areion_perm512 \u306f				} -returnCodes error -result "expected byte sequence but character 0 was '\u306F' (U+00306F)" -errorCode {TCL VALUE BYTES}
+
+test areion_perm512-1.1 {Basic areion permutation 512 test} -body { #<<<
+	binary encode hex [::hash::::areion_perm512 [binary decode hex {
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+	}]]
+} -result [regsub -all {\s+} {
+	b2 ad b0 4f a9 1f 90 15 59 36 71 22 cb 3c 96 a9
+	78 cf 3e e4 b7 3c 6a 54 3f e6 dc 85 77 91 02 e7
+	e3 f5 50 10 16 ce ed 1d d2 c4 8d 0b c2 12 fb 07
+	ad 16 87 94 bd 96 cf f3 59 09 cd d8 e2 27 49 28
+} {}]
+#>>>
+test areion_perm512-2.1 {Basic areion permutation 512 test} -body { #<<<
+	binary encode hex [::hash::areion_perm512 [binary decode hex {
+		00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+		10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+		20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f
+		30 31 32 33 34 35 36 37 38 39 3a 3b 3c 3d 3e 3f
+	}]]
+} -result [regsub -all {\s+} {
+	b6 90 b8 82 97 ec 47 0b 07 dd a9 2b 91 95 9c ff
+	13 5e 9a c5 fc 3d c9 b6 47 a4 3f 4d aa 8d a7 a4
+	e0 af bd d8 e6 e2 55 c2 45 27 73 6b 29 8b d6 1d
+	e4 60 ba b9 ea 79 15 c6 d6 dd be 05 fe 8d de 40
+} {}]
+#>>>
+
+test areion256_dm-0.1 {Too few args}	-body {::hash::areion256_dm							} -returnCodes error -result {wrong # args: should be "::hash::areion256_dm block"} -errorCode {TCL WRONGARGS}
+test areion256_dm-0.2 {Too many args}	-body {::hash::areion256_dm foo bar					} -returnCodes error -result {wrong # args: should be "::hash::areion256_dm block"} -errorCode {TCL WRONGARGS}
+test areion256_dm-0.3 {Block too short}	-body {::hash::areion256_dm [string repeat a 31]	} -returnCodes error -result {block must be 32 bytes long} -errorCode NONE
+test areion256_dm-0.4 {Block too long}	-body {::hash::areion256_dm [string repeat a 33]	} -returnCodes error -result {block must be 32 bytes long} -errorCode NONE
+test areion256_dm-0.5 {Not a bytearray}	-body {::hash::areion256_dm \u306f					} -returnCodes error -result "expected byte sequence but character 0 was '\u306F' (U+00306F)" -errorCode {TCL VALUE BYTES}
+
+test areion256_dm-1.1 {Basic areion SFIL 256 dm test} -body { #<<<
+	binary encode hex [::hash::areion256_dm [binary decode hex {
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+	}]]
+} -result [regsub -all {\s+} {
+	28 12 a7 24 65 b2 6e 9f ca 75 83 f6 e4 12 3a a1
+	49 0e 35 e7 d5 20 3e 4b a2 e9 27 b0 48 2f 4d b8
+} {}]
+#>>>
+test areion256_dm-2.1 {Basic areion SFIL 256 dm test} -body { #<<<
+	binary encode hex [::hash::areion256_dm [binary decode hex {
+		00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+		10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+	}]]
+} -result [regsub -all {\s+} {
+	68 85 5d 10 2a e1 67 67 6e ce 08 d2 4e ae bc cc
+	b3 66 e4 48 07 ae 13 d0 d5 06 a8 87 95 b2 bf 9a
+} {}]
+#>>>
+
+test areion512_dm-0.1 {Too few args}	-body {::hash::areion512_dm							} -returnCodes error -result {wrong # args: should be "::hash::areion512_dm block"} -errorCode {TCL WRONGARGS}
+test areion512_dm-0.2 {Too many args}	-body {::hash::areion512_dm foo bar					} -returnCodes error -result {wrong # args: should be "::hash::areion512_dm block"} -errorCode {TCL WRONGARGS}
+test areion512_dm-0.3 {Block too short}	-body {::hash::areion512_dm [string repeat a 63]	} -returnCodes error -result {block must be 64 bytes long} -errorCode NONE
+test areion512_dm-0.4 {Block too long}	-body {::hash::areion512_dm [string repeat a 65]	} -returnCodes error -result {block must be 64 bytes long} -errorCode NONE
+test areion512_dm-0.5 {Not a bytearray}	-body {::hash::areion512_dm \u306f					} -returnCodes error -result "expected byte sequence but character 0 was '\u306F' (U+00306F)" -errorCode {TCL VALUE BYTES}
+
+test areion512_dm-1.1 {Basic areion SFIL 512 dm test} -body { #<<<
+	binary encode hex [::hash::areion512_dm [binary decode hex {
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+	}]]
+} -result [regsub -all {\s+} {
+	59 36 71 22 cb 3c 96 a9 3f e6 dc 85 77 91 02 e7
+	e3 f5 50 10 16 ce ed 1d ad 16 87 94 bd 96 cf f3
+} {}]
+#>>>
+test areion512_dm-2.1 {Basic areion SFIL 512 dm test} -body { #<<<
+	binary encode hex [::hash::areion512_dm [binary decode hex {
+		00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+		10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+		20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f
+		30 31 32 33 34 35 36 37 38 39 3a 3b 3c 3d 3e 3f
+	}]]
+} -result [regsub -all {\s+} {
+	0f d4 a3 20 9d 98 92 f0 5f bd 25 56 b6 90 b9 bb
+	c0 8e 9f fb c2 c7 73 e5 d4 51 88 8a de 4c 23 f1
+} {}]
+#>>>
+
+test areion512_md-0.1 {Too few args}	-body {::hash::areion512_md							} -returnCodes error -result {wrong # args: should be "::hash::areion512_md bytes"} -errorCode {TCL WRONGARGS}
+test areion512_md-0.2 {Too many args}	-body {::hash::areion512_md foo bar					} -returnCodes error -result {wrong # args: should be "::hash::areion512_md bytes"} -errorCode {TCL WRONGARGS}
+test areion512_md-0.5 {Not a bytearray}	-body {::hash::areion512_md \u306f					} -returnCodes error -result "expected byte sequence but character 0 was '\u306F' (U+00306F)" -errorCode {TCL VALUE BYTES}
+
+test areion512_md-1.1 {Basic areion 512 VIL test} -body { #<<<
+	binary encode hex [::hash::areion512_md [binary decode hex {
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+	}]]
+} -result [regsub -all {\s+} {
+	7f 22 34 44 5f 3a 72 00 65 93 79 42 01 53 6c 94
+	09 5d ab d3 fd b5 84 67 48 d3 59 55 5c 52 e6 51
+} {}]
+#>>>
+test areion512_md-2.1 {Basic areion 512 VIL test} -body { #<<<
+	binary encode hex [::hash::areion512_md [binary decode hex {
+		00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+		10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+		20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f
+		30 31 32 33 34 35 36 37 38 39 3a 3b 3c 3d 3e 3f
+		40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f
+		50 51 52 53 54 55 56 57 58 59 5a 5b 5c 5d 5e 5f
+		60 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f
+		70 71 72 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f
+	}]]
+} -result [regsub -all {\s+} {
+	3e 4d 31 0f be 21 d0 7b b9 00 46 88 a1 50 36 b7
+	ab d9 ae 2f e9 e6 0c 9a ca 2a cc 36 98 5e 60 0b
+} {}]
+#>>>
+
+test areion512_vlif_state-1.1 {Verify the initial state (H0 & H1)} -constraints testMode -body { #<<<
+	regexp -all -inline {.{32}} [binary encode hex [::hash::_testmode_areion_vlif_init_state]]
+} -result [if 1 {list \
+	6a09e667bb67ae853c6ef372a54ff53a \
+	510e527f9b05688c1f83d9ab5be0cd19
+} else {list \
+	3af54fa572f36e3c85ae67bb67e6096a \
+	19cde05babd9831f8c68059b7f520e51
+}]
+#>>>
+
+::tcltest::cleanupTests
+return
+
+# vim: ft=tcl foldmethod=marker foldmarker=<<<,>>> ts=4 shiftwidth=4 noexpandtab

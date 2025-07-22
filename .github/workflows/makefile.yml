@@ -65,7 +65,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/v')
       with:
         draft: false
-        prerelease: true
+        prerelease: false
         files: |
           /tmp/dist/hash*.tar.gz
 

@@ -16,3 +16,7 @@ Makefile.teabase
 configure~
 doc/hash.n
 doc/.build
+perf.data
+perf.data.old
+configure_debug.sh
+configure_optimised.sh

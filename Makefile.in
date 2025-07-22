@@ -359,6 +359,12 @@ dist: dist-clean doc
 		$(srcdir)/teabase/tip445.h \
 	    $(DIST_DIR)/teabase/
 
+	$(DIST_INSTALL_SCRIPT) \
+		$(srcdir)/teabase/dtest.tcl \
+		$(srcdir)/teabase/dbench.tcl \
+		$(srcdir)/teabase/dbuild.tcl \
+	    $(DIST_DIR)/teabase/
+
 	$(INSTALL_DATA_DIR) $(DIST_DIR)/bench
 	$(DIST_INSTALL_DATA) \
 		$(srcdir)/teabase/teabase_bench-0.1.tm \

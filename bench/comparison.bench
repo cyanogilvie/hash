@@ -9,65 +9,90 @@ proc main {} {
 	bench comparison-1.1 {Very short input} -batch auto -setup { #<<<
 		set data	[string repeat a 16]
 	} -compare {
-		md5			{::hash::md5 $data}
-		sha256		{::hash::sha256 $data}
-		sha384		{::hash::sha384 $data}
-		sha512		{::hash::sha512 $data}
+		md5				{::hash::md5 $data}
+		sha256			{::hash::sha256 $data}
+		sha384			{::hash::sha384 $data}
+		sha512			{::hash::sha512 $data}
+		areion512_md	{::hash::areion512_md $data}
 	} -cleanup {
 		unset -nocomplain data
 	} -results [list \
-		md5			[binary decode hex 23ca472302f49b3ea5592b146a312da0] \
-		sha256		0c0beacef8877bbf2416eb00f2b5dc96354e26dd1df5517320459b1236860f8c \
-		sha384		74236de0d61c96b4fd60554f0bff7deca6aa73545b788493a4d049f04f8a2fb77915caac0cbcfecabc08d1b231c37968 \
-		sha512		987d0fc93db6a73fdb16493690fb42455c7c6fbafe9a276965424b12afad3512fb808d902faa8a019d639dc5ad07c235805e08f396147cf435913cfed501f65a \
+		md5				[binary decode hex 23ca472302f49b3ea5592b146a312da0] \
+		sha256			0c0beacef8877bbf2416eb00f2b5dc96354e26dd1df5517320459b1236860f8c \
+		sha384			74236de0d61c96b4fd60554f0bff7deca6aa73545b788493a4d049f04f8a2fb77915caac0cbcfecabc08d1b231c37968 \
+		sha512			987d0fc93db6a73fdb16493690fb42455c7c6fbafe9a276965424b12afad3512fb808d902faa8a019d639dc5ad07c235805e08f396147cf435913cfed501f65a \
+		areion512_md	[binary decode hex 0ce7248a6ec63e5a8ba08516c7f6164d69ec3ee8cb0fb4089f28bb8860f11fa7] \
 	]
+	#>>>
+	bench comparison-1.2 {Very short input - single 256 bit block} -batch auto -setup { #<<<
+		set data	[string repeat a 32]
+	} -deps {
+		areion_nop		{::hash::_testmode_areion_nop x}
+	} -compare {
+		md5				{::hash::md5 $data}
+		sha256			{::hash::sha256 $data}
+		sha384			{::hash::sha384 $data}
+		sha512			{::hash::sha512 $data}
+		areion256_dm	{::hash::areion256_dm $data}
+		areion512_md	{::hash::areion512_md $data}
+		areion_perm256	{::hash::areion_perm256 $data}
+		areion_nop		{::hash::_testmode_areion_nop $data}
+	} -cleanup {
+		unset -nocomplain data
+	}
 	#>>>
 	bench comparison-2.1 {User-Agent string length input} -batch auto -setup { #<<<
 		set data	{Mozilla/5.0 (iPhone; CPU iPhone OS 18_5_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/364.0.744893471 Mobile/15E148 Safari/604.1}
 	} -compare {
-		md5			{::hash::md5 $data}
-		sha256		{::hash::sha256 $data}
-		sha384		{::hash::sha384 $data}
-		sha512		{::hash::sha512 $data}
+		md5				{::hash::md5 $data}
+		sha256			{::hash::sha256 $data}
+		sha384			{::hash::sha384 $data}
+		sha512			{::hash::sha512 $data}
+		areion512_md	{::hash::areion512_md $data}
 	} -cleanup {
 		unset -nocomplain data
 	} -results [list \
-		md5			[binary decode hex 92eebab24dee7191f009f95f30b18c13] \
-		sha256		eeb09e7963f7b5f5dc487396548e0737026459343461e6a6c318e993763d2dff \
-		sha384		e4e0f08182b553c77c4ffc9eb7edfe37f6a48eca46d93ff0027d1038adcf71adebfd9f17b74bc4726c979a46104f6c18 \
-		sha512		a6587522088fc7367ae5834540af0493cd463050a1c0fbc6506162b4980c465bdc06a9b68562e3e85a1dab062e49515af55a16ccbdb8182f60a62613547be10e \
+		md5				[binary decode hex 92eebab24dee7191f009f95f30b18c13] \
+		sha256			eeb09e7963f7b5f5dc487396548e0737026459343461e6a6c318e993763d2dff \
+		sha384			e4e0f08182b553c77c4ffc9eb7edfe37f6a48eca46d93ff0027d1038adcf71adebfd9f17b74bc4726c979a46104f6c18 \
+		sha512			a6587522088fc7367ae5834540af0493cd463050a1c0fbc6506162b4980c465bdc06a9b68562e3e85a1dab062e49515af55a16ccbdb8182f60a62613547be10e \
+		areion512_md	[binary decode hex d5932379d2fda2fdcf92ee412d3f7e86c63ca70f58edc5035f21a7060b4f10be] \
 	]
 	#>>>
 	bench comparison-3.1 {Performance comparison all algorithms (1KB)} -batch auto -setup { #<<<
 		set data	[string repeat a 1024]
 	} -compare {
-		md5			{::hash::md5 $data}
-		sha256		{::hash::sha256 $data}
-		sha384		{::hash::sha384 $data}
-		sha512		{::hash::sha512 $data}
+		md5				{::hash::md5 $data}
+		sha256			{::hash::sha256 $data}
+		sha384			{::hash::sha384 $data}
+		sha512			{::hash::sha512 $data}
+		areion512_md	{::hash::areion512_md $data}
 	} -cleanup {
 		unset -nocomplain data
 	} -results [list \
-		md5			[binary decode hex c9a34cfc85d982698c6ac89f76071abd] \
-		sha256		2edc986847e209b4016e141a6dc8716d3207350f416969382d431539bf292e4a \
-		sha384		a31bea5896ef0e418f18014ef9fde89f6f33a177dc97190bc39dedd94e5476342a0d277c92bc19ca0542fca227d12c4c \
-		sha512		74b22492e3b9a86a9c93c23a69f821ebafa429302c1f4054b4bc37356a4bae056d9ccbc6f24093a25704faaa72bd21a5f337ca9ec92f32369d24e6b9fae954d8 \
+		md5				[binary decode hex c9a34cfc85d982698c6ac89f76071abd] \
+		sha256			2edc986847e209b4016e141a6dc8716d3207350f416969382d431539bf292e4a \
+		sha384			a31bea5896ef0e418f18014ef9fde89f6f33a177dc97190bc39dedd94e5476342a0d277c92bc19ca0542fca227d12c4c \
+		sha512			74b22492e3b9a86a9c93c23a69f821ebafa429302c1f4054b4bc37356a4bae056d9ccbc6f24093a25704faaa72bd21a5f337ca9ec92f32369d24e6b9fae954d8 \
+		areion512_md	[binary decode hex 2b6b38116076fb1dca5e71173f21718eb355aebaf388b464408a7cf92d27f5d2] \
 	]
 	#>>>
 	bench comparison-4.1 {Throughput test (1MB)} -batch 1 -setup { #<<<
 		set data	[string repeat a 1048576]
 	} -compare {
-		md5			{::hash::md5 $data}
-		sha256		{::hash::sha256 $data}
-		sha384		{::hash::sha384 $data}
-		sha512		{::hash::sha512 $data}
+		md5				{::hash::md5 $data}
+		sha256			{::hash::sha256 $data}
+		sha384			{::hash::sha384 $data}
+		sha512			{::hash::sha512 $data}
+		areion512_md	{::hash::areion512_md $data}
 	} -cleanup {
 		unset -nocomplain data
 	} -results [list \
-		md5			[binary decode hex 7202826a7791073fe2787f0c94603278] \
-		sha256		9bc1b2a288b26af7257a36277ae3816a7d4f16e89c1e7e77d0a5c48bad62b360 \
-		sha384		ca5f19365048f25575c940a3c32a60cef4b9c9f46588d364845df15d6d92ebb4b9abe7ea3d65a381f4079c06deac8c2d \
-		sha512		f083039442f4a8cee2985641fa49cada4ca54d9bf3de03f9ef9f1f726dbb655d2a844aa1014e54fd239a5b3f37ae46d64744fee51ab2d7f5fe9b209e90b5ad52 \
+		md5				[binary decode hex 7202826a7791073fe2787f0c94603278] \
+		sha256			9bc1b2a288b26af7257a36277ae3816a7d4f16e89c1e7e77d0a5c48bad62b360 \
+		sha384			ca5f19365048f25575c940a3c32a60cef4b9c9f46588d364845df15d6d92ebb4b9abe7ea3d65a381f4079c06deac8c2d \
+		sha512			f083039442f4a8cee2985641fa49cada4ca54d9bf3de03f9ef9f1f726dbb655d2a844aa1014e54fd239a5b3f37ae46d64744fee51ab2d7f5fe9b209e90b5ad52 \
+		areion512_md	[binary decode hex bed24ea8cbe977a65be76c1fcc32289b2643de5539310b182d73f7600d89eb91] \
 	]
 	#>>>
 }

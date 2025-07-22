@@ -35,4 +35,11 @@ Government shall have only "Restricted Rights" as defined in Clause
 252.227-7013 (c) (1) of DFARs.  Notwithstanding the foregoing, the
 authors grant the U.S. Government and others acting in its behalf
 permission to use and distribute the software in accordance with the
-terms specified in this license. 
+terms specified in this license.
+
+THIRD-PARTY COMPONENTS: This software includes third-party components
+with their own copyright notices and license terms. These components
+are identified by their individual copyright notices at the beginning
+of their respective source files and are subject to their own licensing
+terms rather than the terms of this license. See the documentation for
+complete details about third-party components and their licenses. 

@@ -1,0 +1,25 @@
+if {"bench" ni [info commands bench]} {
+	package require bench
+	namespace import bench::*
+}
+
+package require hash
+
+proc main {} {
+	bench areion-1.1 {areion512_md performance on UA length strings} -batch auto -setup { #<<<
+	} -deps {
+		areion_nop	{::hash::_testmode_areion_nop xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}
+	} -compare {
+		areion512_md	{
+			::hash::areion512_md {Mozilla/5.0 (iPhone; CPU iPhone OS 18_5_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/364.0.744893471 Mobile/15E148 Safari/604.1}
+		}
+		areion_nop		{
+			::hash::_testmode_areion_nop xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+		}
+	}
+	#>>>
+}
+
+main
+
+# vim: ft=tcl foldmethod=marker foldmarker=<<<,>>> ts=4 shiftwidth=4

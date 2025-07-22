@@ -17,7 +17,7 @@ dnl	to configure the system for the local environment.
 # so you can encode the package version directly into the source files.
 #-----------------------------------------------------------------------
 
-AC_INIT([hash],[0.3.3])
+AC_INIT([hash],[0.4.0])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -59,6 +59,75 @@ TEA_PREFIX
 
 TEA_SETUP_COMPILER
 
+# Check for feature toggles
+ENABLE_DEBUG
+ENABLE_TESTMODE
+
+#-----------------------------------------------------------------------
+# Add option to disable hardware acceleration for testing
+#-----------------------------------------------------------------------
+
+AC_ARG_ENABLE([hardware-accel],
+    AS_HELP_STRING([--disable-hardware-accel],[Disable AES-NI and NEON hardware acceleration, use software implementation only (useful for testing)]),
+    [enable_hardware_accel=$enableval],
+    [enable_hardware_accel=yes])
+
+if test "x$enable_hardware_accel" = "xno"; then
+    AC_MSG_NOTICE([Hardware acceleration disabled, using software-only implementation])
+    have_aes_ni=no
+    have_aes_neon=no
+else
+    #-----------------------------------------------------------------------
+    # Check for AES-NI support (x86/x86_64)
+    #-----------------------------------------------------------------------
+
+AC_MSG_CHECKING([for AES-NI support])
+save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -msse4.1 -maes"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <wmmintrin.h>
+]], [[
+__m128i a = _mm_setzero_si128();
+__m128i b = _mm_setzero_si128();
+__m128i c = _mm_aesenc_si128(a, b);
+]])], [
+    AC_MSG_RESULT([yes])
+    AC_DEFINE([HAVE_AES_NI], [1], [Define if AES-NI is available])
+    TEA_ADD_CFLAGS([-msse4.1 -maes])
+    have_aes_ni=yes
+], [
+    AC_MSG_RESULT([no])
+    have_aes_ni=no
+])
+CFLAGS="$save_CFLAGS"
+
+#-----------------------------------------------------------------------
+# Check for ARM NEON AES support (aarch64 has it by default)
+#-----------------------------------------------------------------------
+
+AC_MSG_CHECKING([for ARM NEON AES support])
+save_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -march=armv8-a+crypto"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <arm_neon.h>
+]], [[
+uint8x16_t a = vdupq_n_u8(0);
+uint8x16_t b = vdupq_n_u8(0);
+uint8x16_t c = vaeseq_u8(a, b);
+uint8x16_t d = vaesmcq_u8(c);
+]])], [
+    AC_MSG_RESULT([yes])
+    AC_DEFINE([HAVE_AES_NEON], [1], [Define if ARM NEON AES is available])
+    TEA_ADD_CFLAGS([-march=armv8-a+crypto])
+    have_aes_neon=yes
+], [
+    AC_MSG_RESULT([no])
+    have_aes_neon=no
+])
+CFLAGS="$save_CFLAGS"
+
+fi
+
 #-----------------------------------------------------------------------
 # __CHANGE__
 # Specify the C source files to compile in TEA_ADD_SOURCES,
@@ -69,11 +138,11 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEABASE_ADD_SOURCES([main.c md5.c sha2.c])
+TEABASE_ADD_SOURCES([main.c md5.c sha2.c areion.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
-TEA_ADD_CFLAGS([-DSHA2_USE_INTTYPES_H])
+TEA_ADD_CFLAGS([-DSHA2_USE_INTTYPES_H -std=c17])
 TEA_ADD_STUB_SOURCES([])
 TEA_ADD_TCL_SOURCES([])
 

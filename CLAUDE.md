@@ -19,6 +19,7 @@
 - Container testing: `make test-container`
 - Container build: `make build-container`
 - Container benchmarking: `make benchmark-container`
+- Test the ARM architecture implementations using a container: `make test-container DOCKER_ARGS="--platform linux/arm64" TESTFLAGS="..."`
 
 ## Benchmarking Framework
 - **Comprehensive Suite**: Tests all hash functions with various data sizes
@@ -54,6 +55,7 @@ make benchmark BENCHFLAGS="-match sha256-*"      # SHA-256-specific tests
 - `bench/`: Benchmark scripts
 - `teabase/`: Advanced build system support
 - `tclconfig/`: TEA build configuration
+- `doc/hash.md.in`: Documentation source
 
 ## Hash Functions Available
 - MD5: `hash::md5`
