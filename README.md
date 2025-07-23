@@ -30,7 +30,7 @@ permutation-based hash function. The SHA-2 hashes return their results
 as hex-encoded strings for historical reasons, everything else returns
 binary data. For this reason, if the **tomcrypt** package is available
 it is a better choice for SHA-2 than using \[binary decode hex\] on the
-result of this packages’ SHA-2 functions.
+result of this package’s SHA-2 functions.
 
 The Areion hash is a special purpose hash built entirely on AES
 permutations, which have broad hardware instruction support on modern
