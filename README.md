@@ -1,7 +1,7 @@
 ---
 author:
 - Cyan Ogilvie
-title: hash(3) 0.4.0 \| Implementations of hash functions for Tcl
+title: hash(3) 0.4.1 \| Implementations of hash functions for Tcl
 ---
 
 ## NAME
@@ -10,7 +10,7 @@ hash - Tcl hash function extension
 
 ## SYNOPSIS
 
-**package require hash** ?0.4.0?
+**package require hash** ?0.4.1?
 
 **hash::md5** *data*  
 **hash::sha256** *data*  
@@ -117,13 +117,13 @@ This package has no external dependencies other than Tcl.
 ### From a Release Tarball
 
 Download and extract [the
-release](https://github.com/cyanogilvie/hash/releases/download/v0.4.0/hash0.4.0.tar.gz),
+release](https://github.com/cyanogilvie/hash/releases/download/v0.4.1/hash0.4.1.tar.gz),
 then build in the standard TEA way:
 
 ``` sh
-wget https://github.com/cyanogilvie/hash/releases/download/v0.4.0/hash0.4.0.tar.gz
-tar xf hash0.4.0.tar.gz
-cd hash0.4.0
+wget https://github.com/cyanogilvie/hash/releases/download/v0.4.1/hash0.4.1.tar.gz
+tar xf hash0.4.1.tar.gz
+cd hash0.4.1
 ./configure
 make
 sudo make install
@@ -151,7 +151,7 @@ and strip debug symbols, minimising image size:
 
 ``` dockerfile
 WORKDIR /tmp/hash
-RUN wget https://github.com/cyanogilvie/hash/releases/download/v0.4.0/hash0.4.0.tar.gz -O - | tar xz --strip-components=1 && \
+RUN wget https://github.com/cyanogilvie/hash/releases/download/v0.4.1/hash0.4.1.tar.gz -O - | tar xz --strip-components=1 && \
     ./configure; make test install-binaries install-libraries && \
     strip /usr/local/lib/libhash*.so && \
     cd .. && rm -rf hash

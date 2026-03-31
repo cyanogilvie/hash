@@ -1,0 +1,5 @@
+option('testmode', type: 'boolean', value: false,
+  description: 'Build with whitebox testing hooks exposed')
+
+option('hardware_accel', type: 'boolean', value: true,
+  description: 'Enable AES-NI and NEON hardware acceleration')

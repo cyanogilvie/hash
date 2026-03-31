@@ -4,8 +4,9 @@
 
 static OBJCMD(glue_md5) //<<<
 {
+	(void)cdata;
 	md5_byte_t*		bytes;
-	int				len;
+	Tcl_Size		len;
 	md5_byte_t		digest[16];
 	md5_state_t		state;
 
@@ -25,8 +26,9 @@ static OBJCMD(glue_md5) //<<<
 //>>>
 static OBJCMD(glue_md5_init) //<<<
 {
+	(void)cdata;
 	Tcl_Obj*		res;
-	int				dontcare;
+	Tcl_Size		dontcare;
 	md5_state_t*	state;
 
 	CHECK_ARGS(0, "");
@@ -44,7 +46,8 @@ static OBJCMD(glue_md5_init) //<<<
 //>>>
 static OBJCMD(glue_md5_append) //<<<
 {
-	int				len, dontcare;
+	(void)cdata;
+	Tcl_Size		len, dontcare;
 	md5_state_t*	state;
 	md5_byte_t*		bytes;
 
@@ -61,7 +64,8 @@ static OBJCMD(glue_md5_append) //<<<
 //>>>
 static OBJCMD(glue_md5_finish) //<<<
 {
-	int				dontcare;
+	(void)cdata;
+	Tcl_Size		dontcare;
 	md5_state_t*	state;
 	md5_byte_t		digest[16];
 
@@ -79,9 +83,10 @@ static OBJCMD(glue_md5_finish) //<<<
 //>>>
 static OBJCMD(glue_sha2) //<<<
 {
+	(void)cdata;
 	int				variant;
 	unsigned char*	data;
-	int				datalen;
+	Tcl_Size		datalen;
 	Tcl_Obj*		res = NULL;
 
 	CHECK_ARGS(2, "variant data");
@@ -142,8 +147,9 @@ static OBJCMD(glue_sha2) //<<<
 //>>>
 static OBJCMD(glue_sha256) //<<<
 {
+	(void)cdata;
 	unsigned char*	data;
-	int				datalen;
+	Tcl_Size		datalen;
 	SHA256_CTX		ctx;
 	char			out[SHA256_DIGEST_STRING_LENGTH];
 
@@ -163,8 +169,9 @@ static OBJCMD(glue_sha256) //<<<
 //>>>
 static OBJCMD(glue_sha384) //<<<
 {
+	(void)cdata;
 	unsigned char*	data;
-	int				datalen;
+	Tcl_Size		datalen;
 	SHA384_CTX		ctx;
 	char			out[SHA384_DIGEST_STRING_LENGTH];
 
@@ -184,8 +191,9 @@ static OBJCMD(glue_sha384) //<<<
 //>>>
 static OBJCMD(glue_sha512) //<<<
 {
+	(void)cdata;
 	unsigned char*	data;
-	int				datalen;
+	Tcl_Size		datalen;
 	SHA512_CTX		ctx;
 	char			out[SHA512_DIGEST_STRING_LENGTH];
 

@@ -1,4 +1,4 @@
-name: Makefile CI
+name: Build and Release
 
 on: push
 
@@ -12,34 +12,37 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install pandoc texlive-latex-base texlive-latex-recommended
+        sudo apt install pandoc texlive-latex-base texlive-latex-recommended ninja-build
+        pip3 install --user meson
 
     - name: Cache Tcl build
       id: cache-tcl
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
-        path: /opt/tcl8.7
-        key: ${{ runner.os }}-f7629abff2
+        path: /opt/tcl9.0
+        key: ${{ runner.os }}-tcl9.0
 
-    - name: Build Tcl 8.7
+    - name: Build Tcl 9.0
       if: steps.cache-tcl.outputs.cache-hit != 'true'
       run: |
         mkdir -p /tmp/src/tcl
         cd /tmp/src/tcl
-        wget https://core.tcl-lang.org/tcl/tarball/f7629abff2/tcl.tar.gz -O - | tar xz --strip-components=1
+        sudo mkdir /opt/tcl9.0
+        sudo chown -R $(id -u) /opt/tcl9.0
+        wget https://core.tcl-lang.org/tcl/tarball/core-9-0-3/tcl.tar.gz -O - | tar xz --strip-components=1
         cd unix
-        ./configure CFLAGS="-DPURIFY" --enable-symbols --enable-testmode --prefix=/opt/tcl8.7
+        ./configure CFLAGS="-DPURIFY" --prefix=/opt/tcl9.0
         make -j 8
-        sudo make install
+        make install
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'true'
 
     - name: Build tcl-hash
       run: |
         autoconf
-        ./configure --with-tcl=/opt/tcl8.7/lib --enable-testmode
+        ./configure --with-tcl=/opt/tcl9.0/lib --enable-testmode
         make
 
     - name: Run tests
@@ -51,16 +54,25 @@ jobs:
         name: test-results
         path: /tmp/test_results.log
 
-    - name: Dist
-      #if: startsWith(github.ref, 'refs/tags/v')
+    - name: Build tcl-hash (meson)
+      run: |
+        PKG_CONFIG_PATH=/opt/tcl9.0/lib/pkgconfig meson setup builddir -Dtestmode=true
+        meson compile -C builddir
+
+    - name: Run tests (meson)
+      run: meson test -C builddir --print-errorlogs
+
+    - name: Create distribution
       run: |
         make dist
-    - uses: actions/upload-artifact@v4
+
+    - name: Upload distribution artifact
+      uses: actions/upload-artifact@v4
       with:
         name: release-tarball
         path: /tmp/dist/hash*.tar.gz
 
-    - name: Release
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')
       with:
@@ -68,7 +80,4 @@ jobs:
         prerelease: false
         files: |
           /tmp/dist/hash*.tar.gz
-
-#    - name: debug
-#      if: ${{ failure() }}
-#      uses: mxschmitt/action-tmate@v3
+        generate_release_notes: true

@@ -1,6 +1,10 @@
 #ifndef _HASH_H
 #define _HASH_H
 
+#if HAVE_CONFIG_H
+#   include <config.h>
+#endif
+
 #define NS "::hash"
 
 #include <stdint.h>

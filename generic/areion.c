@@ -200,12 +200,13 @@ static inline void vil_hash(const uint8_t*restrict data, uint64_t len, uint8_t o
 
 static OBJCMD(areion_perm256_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_BLOCK, A_objc};
 	CHECK_ARGS_LABEL(finally, code, "block");
 
-	int len;
+	Tcl_Size len;
 	const uint8_t*	input = Tcl_GetBytesFromObj(interp, objv[A_BLOCK], &len);
 	if (input == NULL) {code = TCL_ERROR; goto finally;}
 	if (len != 32) THROW_ERROR_LABEL(finally, code, "block must be 32 bytes long");
@@ -243,12 +244,13 @@ finally:
 //>>>
 static OBJCMD(areion_perm512_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_BLOCK, A_objc};
 	CHECK_ARGS_LABEL(finally, code, "block");
 
-	int len;
+	Tcl_Size len;
 	const uint8_t*	input = Tcl_GetBytesFromObj(interp, objv[A_BLOCK], &len);
 	if (input == NULL) {code = TCL_ERROR; goto finally;}
 	if (len != 64) THROW_ERROR_LABEL(finally, code, "block must be 64 bytes long");
@@ -292,12 +294,13 @@ finally:
 //>>>
 static OBJCMD(areion256_dm_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_BLOCK, A_objc};
 	CHECK_ARGS_LABEL(finally, code, "block");
 
-	int len;
+	Tcl_Size len;
 	const uint8_t*	input = Tcl_GetBytesFromObj(interp, objv[A_BLOCK], &len);
 	if (input == NULL) {code = TCL_ERROR; goto finally;}
 	if (len != 32) THROW_ERROR_LABEL(finally, code, "block must be 32 bytes long");
@@ -354,12 +357,13 @@ finally:
 //>>>
 static OBJCMD(areion512_dm_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_BLOCK, A_objc};
 	CHECK_ARGS_LABEL(finally, code, "block");
 
-	int len;
+	Tcl_Size len;
 	const uint8_t*	input = Tcl_GetBytesFromObj(interp, objv[A_BLOCK], &len);
 	if (input == NULL) {code = TCL_ERROR; goto finally;}
 	if (len != 64) THROW_ERROR_LABEL(finally, code, "block must be 64 bytes long");
@@ -455,12 +459,13 @@ finally:
 //>>>
 static OBJCMD(areion512_md_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_BYTES, A_objc};
 	CHECK_ARGS_LABEL(finally, code, "bytes");
 
-	int len;
+	Tcl_Size len;
 	const uint8_t*	input = Tcl_GetBytesFromObj(interp, objv[A_BYTES], &len);
 	if (input == NULL) {code = TCL_ERROR; goto finally;}
 
@@ -477,6 +482,7 @@ finally:
 #if TESTMODE
 static OBJCMD(areion_vlif_init_state_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_objc};
@@ -495,12 +501,13 @@ finally:
 //>>>
 static OBJCMD(areion_nop_cmd) //<<<
 {
+	(void)cdata;
 	int			code = TCL_OK;
 
 	enum {A_cmd, A_BYTES, A_objc};
 	CHECK_ARGS_LABEL(finally, code, "bytes");
 
-	int len;
+	Tcl_Size len;
 	const uint8_t*	input = Tcl_GetBytesFromObj(interp, objv[A_BYTES], &len);
 	if (input == NULL) {code = TCL_ERROR; goto finally;}
 
