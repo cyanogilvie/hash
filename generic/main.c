@@ -12,7 +12,8 @@ static OBJCMD(glue_md5) //<<<
 
 	CHECK_ARGS(1, "data");
 
-	bytes = (md5_byte_t*)Tcl_GetByteArrayFromObj(objv[1], &len);
+	bytes = (md5_byte_t*)Tcl_GetBytesFromObj(interp, objv[1], &len);
+	if (bytes == NULL) return TCL_ERROR;
 
 	md5_init(&state);
 	md5_append(&state, bytes, len);
@@ -34,7 +35,7 @@ static OBJCMD(glue_md5_init) //<<<
 	CHECK_ARGS(0, "");
 
 	res = Tcl_NewByteArrayObj(NULL, sizeof(md5_state_t));
-	state = (md5_state_t*)Tcl_GetByteArrayFromObj(res, &dontcare);
+	state = (md5_state_t*)Tcl_GetBytesFromObj(NULL, res, &dontcare);
 
 	md5_init(state);
 
@@ -53,8 +54,10 @@ static OBJCMD(glue_md5_append) //<<<
 
 	CHECK_ARGS(2, "handle bytes");
 
-	state = (md5_state_t*)Tcl_GetByteArrayFromObj(objv[1], &dontcare);
-	bytes = (md5_byte_t*)Tcl_GetByteArrayFromObj(objv[2], &len);
+	state = (md5_state_t*)Tcl_GetBytesFromObj(interp, objv[1], &dontcare);
+	if (state == NULL) return TCL_ERROR;
+	bytes = (md5_byte_t*)Tcl_GetBytesFromObj(interp, objv[2], &len);
+	if (bytes == NULL) return TCL_ERROR;
 
 	md5_append(state, bytes, len);
 
@@ -71,7 +74,8 @@ static OBJCMD(glue_md5_finish) //<<<
 
 	CHECK_ARGS(1, "handle");
 
-	state = (md5_state_t*)Tcl_GetByteArrayFromObj(objv[1], &dontcare);
+	state = (md5_state_t*)Tcl_GetBytesFromObj(interp, objv[1], &dontcare);
+	if (state == NULL) return TCL_ERROR;
 
 	md5_finish(state, digest);
 
@@ -92,7 +96,8 @@ static OBJCMD(glue_sha2) //<<<
 	CHECK_ARGS(2, "variant data");
 
 	TEST_OK(Tcl_GetIntFromObj(interp, objv[1], &variant));
-	data = Tcl_GetByteArrayFromObj(objv[2], &datalen);
+	data = Tcl_GetBytesFromObj(interp, objv[2], &datalen);
+	if (data == NULL) return TCL_ERROR;
 
 	switch (variant) {
 		case 256:
@@ -155,7 +160,8 @@ static OBJCMD(glue_sha256) //<<<
 
 	CHECK_ARGS(1, "data");
 
-	data = Tcl_GetByteArrayFromObj(objv[1], &datalen);
+	data = Tcl_GetBytesFromObj(interp, objv[1], &datalen);
+	if (data == NULL) return TCL_ERROR;
 
 	SHA256_Init(&ctx);
 	SHA256_Update(&ctx, data, datalen);
@@ -177,7 +183,8 @@ static OBJCMD(glue_sha384) //<<<
 
 	CHECK_ARGS(1, "data");
 
-	data = Tcl_GetByteArrayFromObj(objv[1], &datalen);
+	data = Tcl_GetBytesFromObj(interp, objv[1], &datalen);
+	if (data == NULL) return TCL_ERROR;
 
 	SHA384_Init(&ctx);
 	SHA384_Update(&ctx, data, datalen);
@@ -199,7 +206,8 @@ static OBJCMD(glue_sha512) //<<<
 
 	CHECK_ARGS(1, "data");
 
-	data = Tcl_GetByteArrayFromObj(objv[1], &datalen);
+	data = Tcl_GetBytesFromObj(interp, objv[1], &datalen);
+	if (data == NULL) return TCL_ERROR;
 
 	SHA512_Init(&ctx);
 	SHA512_Update(&ctx, data, datalen);

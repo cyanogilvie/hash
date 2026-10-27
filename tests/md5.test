@@ -24,5 +24,21 @@ test md5-2.1 {Incremental MD5 test} -body { #<<<
 } -result {e4d7f1b4ed2e42d15898f4b27b019da4}
 #>>>
 
+test md5-2.1 {A character above U+00FF throws, rather than passing NULL to the hash} -body { #<<<
+	list [catch {hash::md5 "O\u2019Neill"} errmsg options] [dict get $options -errorcode]
+} -result {1 {TCL VALUE BYTES}}
+#>>>
+test md5-2.2 {Characters up to U+00FF are bytes} -body { #<<<
+	string equal [hash::md5 "Zo\u00eb"] [hash::md5 [binary format H* 5a6feb]]
+} -result 1
+#>>>
+test md5-2.3 {md5_append of a character above U+00FF throws} -body { #<<<
+	set handle	[hash::md5_init]
+	list [catch {hash::md5_append $handle "O\u2019Neill"} errmsg options] [dict get $options -errorcode]
+} -cleanup {
+	unset -nocomplain handle
+} -result {1 {TCL VALUE BYTES}}
+#>>>
+
 ::tcltest::cleanupTests
 return

@@ -44,5 +44,14 @@ test sha256-1.9 {sha256 test vector 9} -body { #<<<
 } -result cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0
 #>>>
 
+test sha256-2.1 {A character above U+00FF throws, rather than passing NULL to the hash} -body { #<<<
+	list [catch {hash::sha256 "O\u2019Neill"} errmsg options] [dict get $options -errorcode]
+} -result {1 {TCL VALUE BYTES}}
+#>>>
+test sha256-2.2 {Characters up to U+00FF are bytes} -body { #<<<
+	string equal [hash::sha256 "Zo\u00eb"] [hash::sha256 [binary format H* 5a6feb]]
+} -result 1
+#>>>
+
 ::tcltest::cleanupTests
 return

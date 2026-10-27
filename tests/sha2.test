@@ -116,5 +116,14 @@ test sha2-512.9 {sha2 512 test vector 9} -body { #<<<
 } -result e718483d0ce769644e2e42c7bc15b4638e1f98b13b2044285632a803afa973ebde0ff244877ea60a4cb0432ce577c31beb009c5c2c49aa2e4eadb217ad8cc09b
 #>>>
 
+test sha2-2.1 {A character above U+00FF throws, rather than passing NULL to the hash} -body { #<<<
+	list [catch {hash::sha2 256 "O\u2019Neill"} errmsg options] [dict get $options -errorcode]
+} -result {1 {TCL VALUE BYTES}}
+#>>>
+test sha2-2.2 {Characters up to U+00FF are bytes} -body { #<<<
+	string equal [hash::sha2 256 "Zo\u00eb"] [hash::sha2 256 [binary format H* 5a6feb]]
+} -result 1
+#>>>
+
 ::tcltest::cleanupTests
 return

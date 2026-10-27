@@ -43,5 +43,14 @@ test sha384-1.9 {sha384 test vector 9} -body { #<<<
 } -result 9d0e1809716474cb086e834e310a4a1ced149e9c00f248527972cec5704c2a5b07b8b3dc38ecc4ebae97ddd87f3d8985
 #>>>
 
+test sha384-2.1 {A character above U+00FF throws, rather than passing NULL to the hash} -body { #<<<
+	list [catch {hash::sha384 "O\u2019Neill"} errmsg options] [dict get $options -errorcode]
+} -result {1 {TCL VALUE BYTES}}
+#>>>
+test sha384-2.2 {Characters up to U+00FF are bytes} -body { #<<<
+	string equal [hash::sha384 "Zo\u00eb"] [hash::sha384 [binary format H* 5a6feb]]
+} -result 1
+#>>>
+
 ::tcltest::cleanupTests
 return
